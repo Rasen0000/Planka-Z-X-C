@@ -1,33 +1,24 @@
-var box2d = {
-	b2Vec2: Box2D.Common.Math.b2Vec2,
-	b2BodyDef: Box2D.Dynamics.b2BodyDef,
-	b2Body: Box2D.Dynamics.b2Body, 
-	b2FixtureDef: Box2D.Dynamics.b2FixtureDef,
-	b2Fixture: Box2D.Dynamics.b2Fixture,
-	b2World: Box2D.Dynamics.b2World,
-	b2MassData: Box2D.Collision.Shapes.b2MassData,
-	b2PolygonShape: Box2D.Collision.Shapes.b2PolygonShape,
-	b2CircleShape: Box2D.Collision.Shapes.b2CircleShape,
-	b2DebugDraw: Box2D.Dynamics.b2DebugDraw
-};
-
-var SCALE=30;
+ ///'use strict'; с ним фреймворк не работает
 
 
-var button;
+const SCALE=30;
+
+
+let button;
 
 let a =(function() {
-	var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create})
+	let game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create})
 	
 	/* game.state.add("Game",Game); */
 	
 function preload() {
 	game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-	    game.scale.pageAlignHorizontally = true;///выравнивание элемента по горизонтали
+	game.scale.pageAlignHorizontally = true;///выравнивание элемента по горизонтали
     game.scale.pageAlignVertically = true;
 	game.load.image('panel', 'img/grey_panel.png');
 	game.load.spritesheet('greenSheet', 'img/greenSheet.png', 190, 46.3);
-}
+	
+	}
 
 
 
@@ -38,6 +29,7 @@ function create() {
 	button.onInputOver.add(over, this);
     button.onInputOut.add(out, this);
     button.onInputUp.add(up, this);
+	window.onload = runMyShit;
 
 }
 
@@ -52,6 +44,50 @@ function over() {
 function out() {
     console.log('button out');
 }
+
+/* попытка добавить движок Matter.js  */
+
+const runMyShit = () => {
+	const Engine = Matter.Engine, /// содержит методы для создания и управления движками
+		Render = Matter.Render, ///базовый рендерер на основе холста HTML5. Этот модуль необходим для визуализации различных движков.
+		World = Matter.World, /// используется для создания и управления миром, в котором работает движок
+		Composites = Matter.Composites,
+		Composite = Matter.Composite,
+		Constraint = Matter.Constraint,
+		Events = Matter.Events,
+		Body = Matter.Body,
+		Bodies = Matter.Bodies; ////позволяет создавать объекты твердого тела
+
+	const engine = Engine.create(document.getElementById('game'));
+/* 		const SCREEN_SIZE = {
+		width: document.body.clientWidth,
+		height: document.body.clientHeight
+	}; */
+
+	const render = Render.create({	/// создания нового рендерера
+		element: window.document.body,	///ключ element, куда библиотека вставляет холст, можно поменять на canvas
+		engine: engine, ///указание движка, который должен использоваться для визуализации мира
+/* 		options: {
+			width: SCREEN_SIZE.width,
+			height: SCREEN_SIZE.height,
+			wireframes: false ////каркас
+		} */
+	});
+	
+	const ballA1 = Bodies.circle(500, 50, 30); ///круг x/y/радиус/
+	Matter.Body.setMass(ballA1, 1000);
+	
+	World.add(engine.world, [ballA1]);
+	
+	
+	Engine.run(engine); ///запуск движка
+	Render.run(render); ///запуск рендера
+	
+	};
+	
+	
+	
+	
 
 function StartGame(){
 	 
@@ -70,20 +106,20 @@ function StartGame(){
 
 function Game() {
 	
-	var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+	const game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render }, );
 
 
-var Game;
-var Menu;
-var ball1;
-var ball2;
-var ball3;
-var randomGrav;
-var randomGravTest;
-var Grav1;
-var Grav2;
-var Grav3;
-var paddle;
+let Game;
+let Menu;
+let ball1;
+let ball2;
+let ball3;
+let randomGrav;
+let randomGravTest;
+let Grav1;
+let Grav2;
+let Grav3;
+let paddle;
 
 function preload() {
 game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -93,12 +129,12 @@ game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 	game.load.image('paddle', 'img/paddle.png');
 }
 
-var handle1;
-var handle2;
-var handle3;
+let handle1;
+let handle2;
+let handle3;
 
-var line1;
-var line2;
+let line1;
+let line2;
 
 function create() {
 	game.physics.startSystem(handle1,Phaser.Physics.ARCADE);
@@ -265,7 +301,7 @@ function render() {
     game.debug.lineInfo(line1, 32, 32);
 	game.debug.lineInfo(line2, 32, 332);
 
-    game.debug.text("Drag the handles", 32, 550);
+    game.debug.text("Недопустить падение шариков, нажимай Z X C", 32, 550);
 
 }
 };
